@@ -6,9 +6,9 @@
   align-items: center;
   padding: 20px;
   font-family:
-    "Inter",
-    -apple-system,
-    sans-serif;
+          "Inter",
+          -apple-system,
+          sans-serif;
 }
 
 .eod-card {
@@ -68,8 +68,8 @@ textarea {
   box-sizing: border-box;
   outline: none;
   transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+          border-color 0.2s,
+          box-shadow 0.2s;
 }
 
 input:focus,
@@ -112,8 +112,8 @@ textarea:focus {
   font-weight: bold;
   cursor: pointer;
   transition:
-    background 0.2s,
-    transform 0.1s;
+          background 0.2s,
+          transform 0.1s;
 }
 
 .submit-btn:hover {

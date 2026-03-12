@@ -13,10 +13,32 @@ export default function App() {
   )
   const [cc, setCc] = useState("hr@payloro.com, rosalindo@payloro.com")
   const [bcc, setBcc] = useState("cleo@payloro.com")
+
+  const formatEODDate = () => {
+    const date = new Date()
+    const datePart = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+    const dayPart = date.toLocaleDateString("en-US", {
+      weekday: "short",
+    })
+    return `${datePart}) ${dayPart}`
+  }
   const [subject, setSubject] = useState(
-    `EOD Report - ${new Date().toLocaleDateString()}`
+    `EOD Report - Marifer Alcon (${formatEODDate()}`
   )
-  const [message, setMessage] = useState("")
+  const today = new Date()
+  const formattedDate = today.toLocaleDateString("en-US", {
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
+  })
+
+  const [message, setMessage] = useState(
+    `Hello, I’ve attached the Excel file for my EOD report ${formattedDate}. Thank you.`
+  )
   const [file, setFile] = useState<{
     filename: string
     content: string
