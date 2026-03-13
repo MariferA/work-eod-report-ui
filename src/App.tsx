@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import type { ChangeEvent } from "react"
+import { sendEmail } from "./services/email"
 import "./App.css"
 
 type Notification = { message: string; type: "success" | "error" } | null
@@ -76,23 +77,15 @@ export default function App() {
 
     setLoading(true)
     try {
-      const apiUrl = import.meta.env.VITE_API_URL
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          senderName,
-          email,
-          cc,
-          bcc,
-          subject,
-          message,
-          attachment: file,
-        }),
+      await sendEmail({
+        senderName,
+        email,
+        cc,
+        bcc,
+        subject,
+        message,
+        attachment: file,
       })
-
-      const data = await res.json()
-      if (!data.success) throw new Error(data.message)
 
       setNotification({ message: "✅ Sent Successfully!", type: "success" })
       setMessage("")
@@ -101,8 +94,13 @@ export default function App() {
         'input[type="file"]'
       ) as HTMLInputElement
       if (fileInput) fileInput.value = ""
-    } catch {
-      setNotification({ message: `❌ Internal Server Error`, type: "error" })
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred"
+      setNotification({
+        message: `❌ ${errorMessage}`,
+        type: "error",
+      })
     } finally {
       setLoading(false)
     }
