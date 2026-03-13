@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build-test-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,19 +17,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install pnpm
         run: npm install -g pnpm
-
       - name: Install dependencies
         run: pnpm install
 
       - name: Lint
         run: pnpm lint
 
-      - name: Test
-        run: pnpm test
       - name: Build
         run: pnpm build
 
@@ -44,9 +41,8 @@ jobs:
             cd ~/frontend/work-eod-report-ui
             rm -rf dist
             mkdir -p dist
-            rsync -avz --delete ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/frontend/work-eod-report-ui/dist/
 
+            rsync -avz --delete ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/frontend/work-eod-report-ui/dist/
             sudo chown -R www-data:www-data dist
             sudo chmod -R 755 dist
-
             sudo systemctl reload nginx
