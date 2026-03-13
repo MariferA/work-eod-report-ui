@@ -33,19 +33,22 @@ jobs:
         run: pnpm build
 
       - name: Upload dist artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
           path: dist
 
   deploy:
-    name: Deploy to VPS
+    name: Deploy Frontend to VPS
     runs-on: ubuntu-latest
     needs: build
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Download dist artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: frontend-dist
           path: dist
@@ -59,10 +62,14 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             cd ~/frontend/work-eod-report-ui
+
             rm -rf dist
             mkdir -p dist
 
+
             rsync -avz --delete ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/frontend/work-eod-report-ui/dist/
+
+            # Set permissions and reload nginx
             sudo chown -R www-data:www-data dist
             sudo chmod -R 755 dist
             sudo systemctl reload nginx
