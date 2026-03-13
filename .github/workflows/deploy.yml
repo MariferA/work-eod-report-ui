@@ -17,7 +17,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 24
+          node-version: 20
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
@@ -27,7 +30,6 @@ jobs:
 
       - name: Test
         run: pnpm test
-
       - name: Build
         run: pnpm build
 
@@ -41,8 +43,10 @@ jobs:
           script: |
             cd ~/frontend/work-eod-report-ui
             rm -rf dist
+            mkdir -p dist
             rsync -avz --delete ./dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/frontend/work-eod-report-ui/dist/
 
             sudo chown -R www-data:www-data dist
             sudo chmod -R 755 dist
+
             sudo systemctl reload nginx
