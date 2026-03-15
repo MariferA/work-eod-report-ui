@@ -53,17 +53,17 @@ jobs:
           name: frontend-dist
           path: dist
   
-      - name: Setup SSH
+      - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-  
-      - name: Upload dist to VPS
+
+      - name: Upload dist to VPS (with sudo)
         run: |
           rsync -avz -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}" \
-          dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/frontend/work-eod-report-ui/dist/
-  
+          dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/frontend/work-eod-report-ui/dist/ --rsync-path="sudo rsync"
+
       - name: Fix permissions and reload nginx
         uses: appleboy/ssh-action@v0.1.7
         with:
